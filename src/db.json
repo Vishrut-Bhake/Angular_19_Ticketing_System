@@ -1,0 +1,25 @@
+{
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Fix login issue",
+      "status": "Discussion",
+      "userId": 101,
+      "deleted": false
+    },
+    {
+      "id": 2,
+      "title": "Implement Kanban Board",
+      "status": "In Progress",
+      "userId": 102,
+      "deleted": false
+    },
+    {
+      "id": 3,
+      "title": "Test API endpoints",
+      "status": "Test",
+      "userId": 103,
+      "deleted": false
+    }
+  ]
+}

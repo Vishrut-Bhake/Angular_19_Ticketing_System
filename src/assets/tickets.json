@@ -1,0 +1,31 @@
+[
+    {
+      "id": 1,
+      "title": "Fix login issue",
+      "status": "Discussion",
+      "userId": 101,
+      "createdBy": "user1"
+    },
+    {
+      "id": 2,
+      "title": "Implement Kanban Board",
+      "status": "In Progress",
+      "userId": 102,
+      "createdBy": "user1"
+    },
+    {
+      "id": 3,
+      "title": "Test API endpoints",
+      "status": "Test",
+      "userId": 103,
+      "createdBy": "user1"
+    },
+    {
+      "id": 4,
+      "title": "Deploy to production",
+      "status": "Complete",
+      "userId": 101,
+      "createdBy": "user1"
+    }
+  ]
+  
