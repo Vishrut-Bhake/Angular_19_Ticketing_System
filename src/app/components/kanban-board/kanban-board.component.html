@@ -1,190 +1,125 @@
 <app-app-navbar></app-app-navbar>
 
-
-<div class="container mt-4"  *ngIf="currentUser.role === 'user'">
-  <!-- <app-create-task></app-create-task> -->
-  <!-- New Task Form Row -->
+<div class="container mt-4" *ngIf="currentUser.role === 'admin'">
   <div class="row">
-    <div class="col-md-3">
-      <div class="task-form card p-3 shadow-sm">
-        <h3 class="text-center">Create New Task</h3>
-        <input class="form-control mb-2" type="text" placeholder="Title" [(ngModel)]="newTicket.title">
-        <textarea class="form-control mb-2" placeholder="Description" [(ngModel)]="newTicket.description"></textarea>
-        <input class="form-control mb-2" type="file" (change)="onFileSelected($event)">
-        <button class="btn btn-primary w-100" (click)="createTicket()">Create</button>
-      </div>
-    </div>
-  </div>
-
-    <!-- USER Board Row -->
-    <div class="row">
-      <div class="col-12">
-        <h2 class="text-center">User Tickets</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <div *ngFor="let status of statuses" class="col-md-3">
-        <div class="column card p-3 shadow-sm">
-          <h3 class="text-center">{{ status }}</h3>
-  
-          <div cdkDropList [id]="status" [cdkDropListData]="getTicketsByStatus(status)"
-               (cdkDropListDropped)="drop($event)" class="drop-list">
-            
-            <div *ngFor="let ticket of getTicketsByStatus(status)" cdkDrag class="ticket card mb-3 p-2">
-              <div class="ticket-content">
-              
-                <h5>Title: <strong class="ticket-title">{{ ticket.title }}</strong></h5>
-                  <p class="ticket-description">{{ ticket.description }}</p>
-                <img *ngIf="ticket.image" [src]="ticket.image" alt="Ticket Image" class="ticket-image img-fluid">
-              </div>
-  
-              <!-- Comments Section -->
-              <div class="comment-section mt-2">
-                <h5>Comments:</h5>
-                <ul class="comments-list list-unstyled">
-                  <li *ngFor="let comment of ticket.comments" class="p-2 bg-light rounded mb-1">
-                    {{ comment.text }}
-                    <img *ngIf="comment.image" [src]="comment.image" alt="Comment Image" class="comment-image img-fluid">
-                  </li>
-                </ul>
-  
-                <!-- Add Comment with Image Upload -->
-                <div class="add-comment mt-2">
-                  <input type="text" #commentInput class="form-control mb-1" placeholder="Add a comment" />
-                  <input type="file" class="form-control mb-1" (change)="onCommentImageSelected($event, ticket)">
-                  <button class="btn btn-sm btn-success w-100" (click)="addComment(ticket, commentInput.value); commentInput.value=''">
-                    Add
-                  </button>
-                </div>
-              </div>
-  
-              <button class="btn btn-danger btn-sm mt-2 w-100" (click)="deleteTicket(ticket)">Delete</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-</div>
-
-<div class="container mt-4"  *ngIf="currentUser.role === 'admin'">
-  <!-- <app-create-task></app-create-task> -->
-  <!-- New Task Form Row -->
-  <div class="row">
-    <div class="col-md-3">
-      <div class="task-form card p-3 shadow-sm">
-        <h3 class="text-center">Create New Task</h3>
-        <input class="form-control mb-2" type="text" placeholder="Title" [(ngModel)]="newTicket.title">
-        <textarea class="form-control mb-2" placeholder="Description" [(ngModel)]="newTicket.description"></textarea>
-        <input class="form-control mb-2" type="file" (change)="onFileSelected($event)">
-        <button class="btn btn-primary w-100" (click)="createTicket()">Create</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Kanban Board Row -->
-  <div class="row">
-    <div class="col-12">
-      <h2 class="text-center">Kanban Board</h2>
-    </div>
-  </div>
-
-  <div class="row">
+    <app-create-task></app-create-task>
     <div *ngFor="let status of statuses" class="col-md-3">
-      <div class="column card p-3 shadow-sm">
-        <h3 class="text-center">{{ status }}</h3>
+      <h3 class="text-center">{{ status }}</h3>
+      <div cdkDropList [id]="status" [cdkDropListData]="getTasksByStatus(status)" [cdkDropListConnectedTo]="statuses"
+        (cdkDropListDropped)="drop($event)" class="drop-list">
 
-        <div cdkDropList [id]="status" [cdkDropListData]="getTicketsByStatus(status)"
-             (cdkDropListDropped)="drop($event)" class="drop-list">
-          
-          <div *ngFor="let ticket of getTicketsByStatus(status)" cdkDrag class="ticket card mb-3 p-2">
-            <div class="ticket-content">
-            
-              <h5>Title: <strong class="ticket-title">{{ ticket.title }}</strong></h5>
-              <p class="ticket-description">{{ ticket.description }}</p>
-              <img *ngIf="ticket.image" [src]="ticket.image" alt="Ticket Image" class="ticket-image img-fluid">
-            </div>
+        <!-- Show message if no tasks available -->
+        <p *ngIf="getTasksByStatus(status).length === 0" class="text-center text-muted">
+          No tasks available
+        </p>
 
-            <!-- Comments Section -->
-            <div class="comment-section mt-2">
-              <h5>Comments:</h5>
-              <ul class="comments-list list-unstyled">
-                <li *ngFor="let comment of ticket.comments" class="p-2 bg-light rounded mb-1">
-                  {{ comment.text }}
-                  <img *ngIf="comment.image" [src]="comment.image" alt="Comment Image" class="comment-image img-fluid">
+        <div *ngFor="let ticketId of getTasksByStatus(status) | filter: currentUser" cdkDrag class="task-card">
+          <p>Title: <strong>{{ ticketId.title }}</strong></p>
+          <p>Description: <strong>{{ ticketId.description }}</strong></p>
+          <p>Created By: <strong>{{ ticketId.username }}</strong></p>
+          <!-- Display Uploaded File -->
+          <div *ngIf="ticketId.fileUrl">
+            <img
+              *ngIf="ticketId.fileUrl.endsWith('.jpg') || ticketId.fileUrl.endsWith('.png') || ticketId.fileUrl.endsWith('.jpeg')"
+              [src]="ticketId.fileUrl" class="img-fluid mt-2" alt="Uploaded Image">
+            <a *ngIf="ticketId.fileUrl.endsWith('.pdf')" [href]="ticketId.fileUrl" target="_blank"
+              class="btn btn-primary btn-sm mt-2">View PDF</a>
+          </div>
+
+          <!-- Comments Section -->
+          <div class="comments-section">
+            <button class="btn btn-sm btn-primary mb-2" (click)="toggleComments(ticketId)">
+              {{ ticketId.showComments ? 'Hide Comments' : 'Show Comments' }}
+            </button>
+            <div *ngIf="ticketId.showComments">
+              <ul class="list-group">
+                <li *ngFor="let comment of ticketId.comments; let i = index" class="list-group-item">
+                  <span> Comments: {{ comment.text }}</span>
+                  <button class="btn btn-danger btn-sm mt-2 w-100" (click)="deleteComment(ticketId,i)">Delete</button>
+                  <br />
+                  <img *ngIf="comment.image" [src]="comment.image" class="comment-image img-fluid mt-2"
+                    alt="Comment Image">
                 </li>
               </ul>
 
-              <!-- Add Comment with Image Upload -->
-              <div class="add-comment mt-2">
-                <input type="text" #commentInput class="form-control mb-1" placeholder="Add a comment" />
-                <input type="file" class="form-control mb-1" (change)="onCommentImageSelected($event, ticket)">
-                <button class="btn btn-sm btn-success w-100" (click)="addComment(ticket, commentInput.value); commentInput.value=''">
-                  Add
+              <!-- Add Comment & Upload File -->
+              <div class="mt-2">
+                <input #commentInput type="text" class="form-control mb-1" placeholder="Add a comment" />
+                <input type="file" class="form-control mb-1" (change)="onCommentImageSelected($event, ticketId)">
+                <button class="btn btn-sm btn-success w-100"
+                  (click)="addComment(ticketId, commentInput.value); commentInput.value=''">
+                  Add Comment
                 </button>
+
               </div>
             </div>
-
-            <button class="btn btn-danger btn-sm mt-2 w-100" (click)="deleteTicket(ticket)">Delete</button>
           </div>
+
+          <!-- Only Admins Can Delete Cards -->
+          <button *ngIf="currentUser.role === 'admin'" class="btn btn-danger btn-sm mt-2 w-100"
+            (click)="deleteTicket(ticketId)">
+            Delete Ticket
+          </button>
         </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container mt-4">
+    <div class="row">
+      <!-- Removed Tickets Section -->
+      <div class="col-lg-6 col-md-12 removed-section" *ngIf="currentUser.role === 'admin'">
+        <h2>Admin Panel - Removed Cards</h2>
+        <table class="table removed-tickets-table">
+          <thead class="thead-dark">
+            <tr>
+              <th>Ticket ID</th>
+              <th>Title</th>
+              <th>Removed By</th>
+              <th>Restore?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ticket of removedTickets">
+              <td>{{ ticket.id }}</td>
+              <td>{{ ticket.title }}</td>
+              <td>{{ ticket.removedBy ? ticket.removedBy : 'Unknown' }}</td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="restoreTicket(ticket)">Restore</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- User Management Section -->
+      <div class="col-lg-6 col-md-12 user-management" *ngIf="currentUser.role === 'admin'">
+        <h3>User Management (Admin Only)</h3>
+        <table class="table user-table">
+          <thead class="thead-dark">
+            <tr>
+              <th>username</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.username }}</td>
+              <td>{{ user.role }}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="editUser(user)">Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
-
-<div class="container">
-  <div class="row">
-    <!-- Removed Tickets Section -->
-    <div class="col-lg-6 col-md-12 removed-section" *ngIf="currentUser.role === 'admin'">
-      <h2>Admin Panel - Removed Cards</h2>
-      
-      <table class="table removed-tickets-table">
-        <thead class="thead-dark">
-          <tr>
-            <th>Ticket ID</th>
-            <th>Title</th>
-            <th>Removed By</th>
-            <th>Restore?</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let ticket of removedTickets">
-            <td>{{ ticket.id }}</td>
-            <td>{{ ticket.title }}</td>
-            <td>{{ ticket.removedBy ? ticket.removedBy : 'Unknown' }}</td>
-            <td>
-              <button class="btn btn-success btn-sm" (click)="restoreTicket(ticket)">Restore</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- User Management Section -->
-    <div class="col-lg-6 col-md-12 user-management" *ngIf="currentUser.role === 'admin'">
-      <h3>User Management (Admin Only)</h3>
-      <table class="table user-table">
-        <thead class="thead-dark">
-          <tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>
-              <button class="btn btn-primary btn-sm" (click)="editUser(user)">Edit</button>
-              <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="container mt-4" *ngIf="currentUser.role === 'user'">
+  <app-users></app-users>
 </div>

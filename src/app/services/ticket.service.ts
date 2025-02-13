@@ -1,70 +1,57 @@
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { computed, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Signal, signal } from '@angular/core';
+import { Comment } from '../components/models';
 
-export interface Ticket {
+interface Ticket {
   id: number;
   title: string;
   description: string;
   status: string;
-  createdBy: string;
+  userId: number;
+  username: string;
+  comments: any[];
+  showComments: boolean;
+  fileUrl?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketService {
-  private ticketsUrl = 'http://localhost:3000/tickets'; // Use JSON server
-  // private ticketUrl ="/assets/tickets.json"
+  private apiUrl = 'http://localhost:3000/tickets'; // JSON Server URL
+
   constructor(private http: HttpClient) {}
-
-  // // Fetch all tickets
-  // getTickets(): Observable<any[]> {
-  //   return this.http.get<any[]>(this.ticketsUrl);
-  // }
-
-  // // Update a ticket
-  // updateTicket(ticketId: number, updatedTicket: any): Observable<any> {
-  //   return this.http.put(`${this.ticketsUrl}/${ticketId}`, updatedTicket);
-  // }
+  createTicket(ticket: any): Observable<any> {
+    return this.http.post(this.apiUrl, ticket);
+  }
   
-  // addTicket(ticket: any): Observable<any> {
-  //   return this.http.post(this.ticketsUrl, ticket);
-  // }
-
-
-  // NEW 
-  private tickets = signal<Ticket[]>([]);
-
   getTickets(): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(this.ticketsUrl);
-  }
-
-  addTicket(ticket: Ticket) {
-    this.tickets.update((tickets) => [...tickets, ticket]);
-  }
-
-  getTicketsByUser(username: string): Signal<Ticket[]> {
-    return computed(() => 
-      this.tickets().filter(ticket => ticket.createdBy === username)
-    );
-  }
-
-  getAllTickets(): Signal<Ticket[]> {
-    return this.tickets;
-  }
-
-  updateTicketStatus(ticketId: number, newStatus: string) {
-    this.tickets.update((tickets) =>
-      tickets.map(ticket =>
-        ticket.id === ticketId ? { ...ticket, status: newStatus } : ticket
-      )
-    );
-  }
-   // Update a ticket
-  updateTicket(ticketId: number, updatedTicket: any): Observable<any> {
-    return this.http.put(`${this.ticketsUrl}/${ticketId}`, updatedTicket);
+    return this.http.get<Ticket[]>(this.apiUrl);
   }
   
+
+  updateTicket(id: number, p0: { comments: Comment[]; }, ticket: Ticket): Observable<Ticket> {
+    return this.http.put<Ticket>(`${this.apiUrl}/${ticket.id}`, ticket);
+  }
+
+  deleteTicket(ticketId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/tickets/${ticketId}`);
+  }
+
+  restoreTicket(ticket: Ticket): Observable<Ticket> {
+    return this.http.post<Ticket>(`${this.apiUrl}/tickets`, ticket);
+  }
+
+  getRemovedTickets(): Observable<Ticket[]> {
+    return this.http.get<Ticket[]>(`${this.apiUrl}/removedTickets`);
+  }
+
+  deleteComment(ticketId: number, commentIndex: number, username: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/tickets/${ticketId}/comments/${commentIndex}`, {
+      body: { username }
+    });
+  }
+
+
 }

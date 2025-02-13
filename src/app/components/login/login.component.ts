@@ -9,13 +9,13 @@ import { AuthService } from '../../services/auth-service.service';
   standalone: false,
 })
 export class LoginComponent {
-  username: string = '';
+  UserName : string = '';
   password: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   login() {
-    if (this.authService.authenticate(this.username, this.password)) {
+    if (this.authService.authenticate(this.UserName , this.password)) {
       this.router.navigateByUrl('/kanban');
     } else {
       alert('Invalid credentials. Please try again.');

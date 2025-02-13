@@ -5,14 +5,14 @@ import { Injectable } from '@angular/core';
 })
 export class UserService {
   private users = [
-    { id: 1, username: 'admin', role: 'admin' },
-    { id: 2, username: 'user', role: 'user' }
+    { id: 1, ownerId : 'admin', role: 'admin' },
+    { id: 2, ownerId : 'user', role: 'user' }
   ];
 
   constructor() { }
 
   getUsers() { return this.users; }
-  addUser(username: string, role: string) { 
-    this.users.push({ id: Date.now(), username, role });
+  addUser(ownerId : string, role: string) { 
+    this.users.push({ id: Date.now(), ownerId , role });
    }
 }

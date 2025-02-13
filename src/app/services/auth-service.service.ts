@@ -1,24 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { User } from '../components/models';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private apiUrl = 'http://localhost:3000';
   private users = [
-    { id: 1, username: 'admin', role: 'admin', password: 'admin' },
-    { id: 2, username: 'user', role: 'user', password: 'user' },
-    { id: 3, username: 'user2', role: 'user', password: 'user2'  },
-    { id: 4, username: 'IT', role: 'IT', password: 'IT' },
-    { id: 5, username: 'tester', role: 'tester', password: 'tester'  },
-    { id: 6, username: 'developer', role: 'developer', password: 'developer'  },
-    { id: 7, username: 'cleak', role: 'cleak', password: 'cleak' },
-    { id: 8, username: 'user5', role: 'user', password: 'user5'  }
+    { id: 1, ownerId : 'admin', role: 'admin', password: 'admin' },
+    { id: 2, ownerId : 'user', role: 'user', password: 'user' },
+    { id: 3, ownerId : 'user1', role: 'user', password: 'user1'  },
+    { id: 4, ownerId : 'IT', role: 'IT', password: 'IT' },
+    { id: 5, ownerId : 'tester', role: 'tester', password: 'tester'  },
+    { id: 6, ownerId : 'developer', role: 'developer', password: 'developer'  },
+    { id: 7, ownerId : 'cleak', role: 'cleak', password: 'cleak' },
+    { id: 8, ownerId : 'user5', role: 'user', password: 'user5'  }
   ];
 
-  constructor(private router: Router) { }
+  constructor(private http: HttpClient , private router:Router) {}
 
-  authenticate(username: string, password: string): boolean {
-    const user = this.users.find(u => u.username === username && u.password === password);
+  authenticate(ownerId : string, password: string): boolean {
+    const user = this.users.find(u => u.ownerId  === ownerId  && u.password === password);
     if (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));
       return true;
@@ -54,19 +57,17 @@ export class AuthService {
     return user ? user.id : 0;
   }
 
-  getUsers(): Observable<any[]> {
-    return of(this.users);
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users`);
   }
-
-  updateUser(userId: number, updatedData: any): Observable<any> {
-    this.users = this.users.map(user => user.id === userId ? { ...user, ...updatedData } : user);
-    return of({ success: true });
+  updateUser(userId: number, updatedData: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${userId}`, updatedData);
   }
-
   deleteUser(userId: number): Observable<any> {
-    this.users = this.users.filter(user => user.id !== userId);
-    return of({ success: true });
+    return this.http.delete(`${this.apiUrl}/users/${userId}`);
   }
-
 
 }
+
+
+

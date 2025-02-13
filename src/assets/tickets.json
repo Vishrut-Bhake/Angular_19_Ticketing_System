@@ -1,31 +1,36 @@
-[
+{
+  "tickets": [
     {
       "id": 1,
-      "title": "Fix login issue",
+      "title": "Design Homepage",
       "status": "Discussion",
-      "userId": 101,
-      "createdBy": "user1"
+      "ownerId ": "user1",
+      "comments": [],
+      "showComments": false
     },
     {
       "id": 2,
-      "title": "Implement Kanban Board",
+      "title": "API Development",
       "status": "In Progress",
-      "userId": 102,
-      "createdBy": "user1"
+      "ownerId ": "user2",
+      "comments": [],
+      "showComments": false
     },
     {
       "id": 3,
-      "title": "Test API endpoints",
+      "title": "Write Test Cases",
       "status": "Test",
-      "userId": 103,
-      "createdBy": "user1"
+      "ownerId ": "user3",
+      "comments": [],
+      "showComments": false
     },
     {
       "id": 4,
-      "title": "Deploy to production",
+      "title": "Deploy to Server",
       "status": "Complete",
-      "userId": 101,
-      "createdBy": "user1"
+      "ownerId ": "admin",
+      "comments": [],
+      "showComments": false
     }
   ]
-  
+}

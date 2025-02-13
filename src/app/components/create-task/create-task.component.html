@@ -1,13 +1,18 @@
-
-<!-- New Task Form Row -->
-<div class="row">
-  <div class="col-md-3">
-    <div class="task-form card p-3 shadow-sm">
-      <h3 class="text-center">Create New Task</h3>
-      <input class="form-control mb-2" type="text" placeholder="Title" [(ngModel)]="newTicket.title">
-      <textarea class="form-control mb-2" placeholder="Description" [(ngModel)]="newTicket.description"></textarea>
-      <input class="form-control mb-2" type="file" (change)="onFileSelected($event)">
-      <button class="btn btn-primary w-100" (click)="createTicket()">Create</button>
-    </div>
+<div class="col-12 col-md-4 mb-3">
+  <h3>Create New Ticket</h3>
+  <div class="input-group mb-2">
+    <input [(ngModel)]="newTaskTitle" type="text" class="form-control" placeholder="Enter Ticket Title">
   </div>
+  <div class="input-group mb-2">
+    <input [(ngModel)]="newTaskDescription" type="text" class="form-control" placeholder="Enter Ticket Description">
+  </div>
+  <div class="input-group mb-2">
+    <select [(ngModel)]="newTaskStatus" class="form-select">
+      <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+    </select>
+  </div>
+  <div class="input-group mb-2">
+    <input type="file" class="form-control" (change)="onFileSelected($event)">
+  </div>
+  <button class="btn btn-success w-100" (click)="createTicket()">Create Ticket</button>
 </div>

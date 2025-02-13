@@ -2,24 +2,76 @@
   "tickets": [
     {
       "id": 1,
-      "title": "Fix login issue",
+      "title": "Design Homepage",
+      "description": "is open",
       "status": "Discussion",
-      "userId": 101,
-      "deleted": false
+      "userId": 1,
+      "username": "user",
+      "comments": []
     },
     {
       "id": 2,
-      "title": "Implement Kanban Board",
+      "title": "API Development",
+      "description": "in progress",
       "status": "In Progress",
-      "userId": 102,
-      "deleted": false
+      "userId": 2,
+      "username": "user",
+      "comments": []
     },
     {
       "id": 3,
-      "title": "Test API endpoints",
+      "title": "Write Test Cases",
+      "description": "in testing",
       "status": "Test",
-      "userId": 103,
-      "deleted": false
+      "userId": 3,
+      "username": "user",
+      "comments": []
+    },
+    {
+      "id": 4,
+      "title": "Deploy to Server",
+      "description": "closed",
+      "status": "Complete",
+      "userId": 4,
+      "username": "user",
+      "comments": []
+    },
+    {
+      "id": 7104,
+      "title": "Backend issue",
+      "description": "Backend issue API",
+      "status": "Discussion",
+      "userId": 2,
+      "comments": [],
+      "showComments": false,
+      "fileUrl": "blob:http://localhost:4200/d6ee8c9e-9115-461b-8a48-63eadab0397a"
+    }
+  ],
+  "removedTickets": [],
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "user",
+      "password": "user123",
+      "role": "user"
+    },
+    {
+      "id": 3,
+      "username": "tester",
+      "password": "tester123",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "username": "user2",
+      "password": "user2123",
+      "role": "user"
     }
   ]
 }

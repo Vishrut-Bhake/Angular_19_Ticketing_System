@@ -9,7 +9,7 @@ import { UserService } from '../../services/user.service';
 })
 export class AdminPanelComponent {
   users: any[] = [];
-  newUsername = '';
+  newownerId  = '';
   newUserRole = 'user';
   authService: any;
   currentUser: any;
@@ -17,10 +17,9 @@ export class AdminPanelComponent {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-
     // Edit user role
     editUser(user: any) {
-      const newRole = prompt(`Edit role for ${user.username}: (admin/user)`, user.role);
+      const newRole = prompt(`Edit role for ${user.ownerId }: (admin/user)`, user.role);
       if (newRole && (newRole === 'admin' || newRole === 'user')) {
         user.role = newRole;
         this.authService.updateUser(user.id, { role: newRole }).subscribe();

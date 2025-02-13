@@ -1,1 +1,63 @@
-<p>users works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <app-create-task></app-create-task>
+    <div *ngFor="let status of statuses" class="col-md-3">
+      <h3 class="text-center">{{ status }}</h3>
+      <div 
+        cdkDropList 
+        [id]="status" 
+        [cdkDropListData]="getTasksByStatus(status)" 
+        [cdkDropListConnectedTo]="statuses"
+        (cdkDropListDropped)="drop($event)" 
+        class="drop-list"
+      >
+        <p *ngIf="getTasksByStatus(status).length === 0" class="text-center text-muted">
+          No tasks available
+        </p>
+
+        <div *ngFor="let ticket of getTasksByStatus(status)" cdkDrag class="task-card">
+          <p>Title: <strong>{{ ticket.title }}</strong></p>
+          <p>Description: <strong>{{ ticket.description }}</strong></p>
+          <div *ngIf="ticket.fileUrl">
+            <img
+              *ngIf="ticket.fileUrl.endsWith('.jpg') || ticket.fileUrl.endsWith('.png') || ticket.fileUrl.endsWith('.jpeg')"
+              [src]="ticket.fileUrl" class="img-fluid mt-2" alt="Uploaded Image"
+            >
+            <a *ngIf="ticket.fileUrl.endsWith('.pdf')" [href]="ticket.fileUrl" target="_blank"
+              class="btn btn-primary btn-sm mt-2">View PDF</a>
+          </div>
+
+          <div class="comments-section">
+            <button class="btn btn-sm btn-primary mb-2" (click)="toggleComments(ticket.id)">
+              {{ ticket.showComments ? 'Hide Comments' : 'Show Comments' }}
+            </button>
+            <div *ngIf="ticket.showComments">
+              <ul class="list-group">
+                <li *ngFor="let comment of ticket.comments; let i = index" class="list-group-item">
+                  <span>Comments: {{ comment.text }}</span>
+                  <button class="btn btn-danger btn-sm mt-2 w-100" (click)="deleteComment(ticket.id, i)">Delete</button>
+                  <br />
+                  <img *ngIf="comment.image" [src]="comment.image" class="comment-image img-fluid mt-2" alt="Comment Image">
+                </li>
+              </ul>
+
+              <div class="mt-2">
+                <input #commentInput type="text" class="form-control mb-1" placeholder="Add a comment" />
+                <input type="file" class="form-control mb-1" (change)="onCommentImageSelected($event, ticket.id)">
+                <button class="btn btn-sm btn-success w-100"
+                  (click)="addComment(ticket.id, commentInput.value); commentInput.value=''">
+                  Add Comment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button *ngIf="currentUser.role === 'admin'" class="btn btn-danger btn-sm mt-2 w-100"
+            (click)="deleteTicket(ticket)">
+            Delete Ticket
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
